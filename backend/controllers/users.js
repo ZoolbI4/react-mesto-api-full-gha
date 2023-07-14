@@ -89,7 +89,12 @@ const updateUser = (req, res, next, newData) => {
     throw new NotFound('Пользователь с указанным id не найден');
   })
     .then((user) => res.status(200).send(user))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new BadRequest('Переданы некорректные данные при обновлении профиля'));
+      }
+      next(err);
+    });
 };
 
 const updateProfile = (req, res, next) => {

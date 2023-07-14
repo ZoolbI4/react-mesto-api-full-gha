@@ -2,11 +2,10 @@ const Cards = require('../models/card');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
-const ConflictError = require('../errors/ConflictError');
 
 const getCards = (req, res, next) => {
   Cards.find({})
-    .then((cards) => res.status(200).send(cards))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 
@@ -18,9 +17,6 @@ const createCard = (req, res, next) => {
     .then((card) => res.status(201).send(card))
     // eslint-disable-next-line consistent-return
     .catch((err) => {
-      if (err.code === 11000) {
-        return next(new ConflictError('Пользователь с таким email уже существует'));
-      }
       if (err.name === 'ValidationError') {
         return next(new BadRequest('Введены некорретные данные'));
       }
